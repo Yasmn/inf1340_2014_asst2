@@ -22,6 +22,7 @@ def test_basic():
 
 
 
+
 def test_files():
     with pytest.raises(FileNotFoundError):
         decide("test_returning_citizen.json", "", "countries.json")
