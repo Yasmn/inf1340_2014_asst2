@@ -17,8 +17,9 @@ import json
 
 
 def decide(input_file, watchlist_file, countries_file):
-
-    #the following with statements read the files defined in the functions parameters
+    # Decision holds the result of all screenings
+    decision = []
+    # the following with statements read the files defined in the functions parameters
     with open(input_file, 'r') as file_reader:
         input_contents = input_file.read()
         entries_contents = json.loads(input_contents)
@@ -31,26 +32,47 @@ def decide(input_file, watchlist_file, countries_file):
         countries_file_contents = countries_file.read()
         countries_contents = json.loads(countries_file_contents)
 
-    #the for loops will check for all the available items in the aforementioned files
+    # the for loops will check for all the available items in the aforementioned files
+
     for entry in entries_contents:
-        entry_passport = entry_passport['passport']
-        entry_last_name = entry_last_name ['last_name']
-        entry_reason = entry_reason ['entry_reason']
-        for watchlist_entry in watchlist_contents:
-            watchlist_entry = watchlist_entry ['passport']
+        entry_passport = entry['passport']
+        entry_last_name = entry['last_name']
+        home_country = entry['country']
 
+        if (entry_passport == "") or (entry_last_name == "") or (home_country == "KAN"):
+            return "Accepted"
+        else:
+            return "Secondary"
 
+    for watchlist_item in watchlist_contents:
+        watchlist_passport = watchlist_item['passport']
+        watchlist_last_name = watchlist_item['last name']
+        watchlist_first_name = watchlist_item['first name']
 
-            for country_entry in countries_contents:
-                country_entry
+        if (watchlist_passport == "") or (watchlist_last_name == "") or (watchlist_first_name == ""):
+            return "Rejected"
+        else:
+            print("secondary")
 
+    for countries_item in countries_contents:
+        countries_medical = countries_item ['medical_advisory']
+        countries_visitor_visa = countries_item ['visitor_visa_required']
+        countries_transit_visa = countries_item ['transit_visa_required']
 
+        if (countries_visitor_visa == 1) or (countries_transit_visa == 1):
+            return "Secondary"
 
+        if countries_medical == 1:
+            return ["Quarantine"]
+        else:
+            return ["Secondary"]
+    else:
+        decision.append ("Accept")
 
-            
 """
 
-    Decides whether a traveller's entry into Kanadia should be accepted
+
+     Decides whether a traveller's entry into Kanadia should be accepted
 
     :param input_file: The name of a JSON formatted file that contains cases to decide
     :param watchlist_file: The name of a JSON formatted file that contains names and passport numbers on a watchlist
